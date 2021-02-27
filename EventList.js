@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import EventCard from './EventCard';
+import ActionButton from 'react-native-action-button';
 
 const styles = StyleSheet.create({
     list: {
@@ -19,10 +20,12 @@ class EventList extends Component {
     componentDidMount() {
 
         setInterval(() => {
-            this.setState({ events:this.state.events.map(evt=>({
-                ...evt,
-                timer: Date.now()
-            })) });
+            this.setState({
+                events: this.state.events.map(evt => ({
+                    ...evt,
+                    timer: Date.now()
+                }))
+            });
         }, 1000);
 
         const events = require('./db.json').events.map(e => ({
@@ -33,15 +36,25 @@ class EventList extends Component {
         this.setState({ events });
     }
 
+    handleAddEvent = () => {
+        this.props.navigation.navigate('NewEvent');
+    }
+
     render() {
-        return (
+        return [
             <FlatList
                 style={styles.list}
                 data={this.state.events}
                 renderItem={({ item }) => <EventCard event={item}></EventCard>}
                 keyExtractor={item => item.id}
+            />,
+            <ActionButton
+                key='tester'
+                title="Go to Ashmeet's profile"
+                onPress={this.handleAddEvent}
+                buttonColor='red'
             />
-        );
+        ];
     }
 }
 
